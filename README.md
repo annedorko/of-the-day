@@ -34,6 +34,8 @@ You can choose any tag using the _tag_ selector. This searches for the Name of a
 ```
 You can choose any taxonomy registered on your site using its coresponding _taxonomy_ selector. For example, if your taxonomy is registered using the unique ID _sections_, this would be sections='Example Section'.
 
+**Please note:** Your taxonomy should be registered to the post type you specify. Otherwise, the shortcode will return no posts.
+
 ## Transients
 
-The shortcode uses get_posts() to query based on your inputs, always returning one or zero posts. The resulting post object is serialized and hashed MD5 to create a unique transient code. That code is designated to expire at midnight according to the local time of your WordPress site.
+The shortcode uses [get_posts()](https://codex.wordpress.org/Template_Tags/get_posts) to query based on your inputs, always returning one or zero posts. The resulting post object is serialized and hashed MD5 to create a unique transient code. That code is designated to expire at midnight according to the local time of your WordPress site.
