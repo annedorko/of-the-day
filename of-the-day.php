@@ -19,38 +19,36 @@
  */
 
 // If this file is called directly, abort.
-if (! defined('WPINC') ) {
-    die;
+if ( ! defined( 'WPINC' ) ) {
+	die;
 }
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-of-the-day-activator.php
  */
-function activate_of_the_day()
-{
-    include_once plugin_dir_path(__FILE__) . 'includes/class-of-the-day-activator.php';
-    Of_The_Day_Activator::activate();
+function activate_of_the_day() {
+	include_once plugin_dir_path( __FILE__ ) . 'includes/class-of-the-day-activator.php';
+	Of_The_Day_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-of-the-day-deactivator.php
  */
-function deactivate_of_the_day()
-{
-    include_once plugin_dir_path(__FILE__) . 'includes/class-of-the-day-deactivator.php';
-    Of_The_Day_Deactivator::deactivate();
+function deactivate_of_the_day() {
+	include_once plugin_dir_path( __FILE__ ) . 'includes/class-of-the-day-deactivator.php';
+	Of_The_Day_Deactivator::deactivate();
 }
 
-register_activation_hook(__FILE__, 'activate_of_the_day');
-register_deactivation_hook(__FILE__, 'deactivate_of_the_day');
+register_activation_hook( __FILE__, 'activate_of_the_day' );
+register_deactivation_hook( __FILE__, 'deactivate_of_the_day' );
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path(__FILE__) . 'includes/class-of-the-day.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-of-the-day.php';
 
 /**
  * Begins execution of the plugin.
@@ -61,11 +59,10 @@ require plugin_dir_path(__FILE__) . 'includes/class-of-the-day.php';
  *
  * @since 1.0.0
  */
-function run_of_the_day()
-{
+function run_of_the_day() {
 
-    $plugin = new Of_The_Day();
-    $plugin->run();
+	$plugin = new Of_The_Day();
+	$plugin->run();
 
 }
 run_of_the_day();

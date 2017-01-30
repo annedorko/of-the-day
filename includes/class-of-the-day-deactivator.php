@@ -20,19 +20,19 @@
  * @subpackage Of_The_Day/includes
  * @author     Your Name <email@example.com>
  */
-class Of_The_Day_Deactivator
-{
+class Of_The_Day_Deactivator {
 
-    /**
-     * Short Description. (use period)
-     *
-     * Long Description.
-     *
-     * @since 1.0.0
-     */
-    public static function deactivate() 
-    {
 
-    }
+
+	/**
+	 * Short Description. (use period)
+	 *
+	 * Long Description.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function deactivate() {
+
+	}
 
 }

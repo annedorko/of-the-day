@@ -24,25 +24,25 @@
  * @subpackage Of_The_Day/includes
  * @author     Your Name <email@example.com>
  */
-class Of_The_Day_i18n
-{
+class Of_The_Day_i18n {
 
 
-    /**
-     * Load the plugin text domain for translation.
-     *
-     * @since 1.0.0
-     */
-    public function load_plugin_textdomain() 
-    {
 
-        load_plugin_textdomain(
-            'of-the-day',
-            false,
-            dirname(dirname(plugin_basename(__FILE__))) . '/languages/'
-        );
 
-    }
+	/**
+	 * Load the plugin text domain for translation.
+	 *
+	 * @since 1.0.0
+	 */
+	public function load_plugin_textdomain() {
+
+		load_plugin_textdomain(
+			'of-the-day',
+			false,
+			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
+		);
+
+	}
 
 
 

@@ -3,10 +3,10 @@ Contributors: annedorko
 Donate link: https://paypal.me/annedorko/
 Tags: show post, random posts, automatic, featured
 Requires at least: 3.0.1
-Tested up to: 3.4
+Tested up to: 4.7.2
 Stable tag: 4.3
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License: GPLv3
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 This is a simple plugin that allows you to automatically feature a post of the day.
 
@@ -45,7 +45,7 @@ e.g.
 
 1. Upload `of-the-day.php` to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `<?php do_action('of_the_day_hook'); ?>` in your templates
+1. Place `<?php do_action( 'of_the_day_hook' ); ?>` in your templates
 
 == Frequently Asked Questions ==
 
@@ -106,7 +106,7 @@ Here's a link to [WordPress](http://wordpress.org/ "Your favorite software") and
 Titles are optional, naturally.
 
 [markdown syntax]: http://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
+			"Markdown is what the parser uses to process much of the readme file"
 
 Markdown uses email style notation for blockquotes and I've been told:
 > Asterisks for *emphasis*. Double it up  for **strong**.
