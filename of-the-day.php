@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @link              https://www.annedorko.com/oftheday
+ * @link              https://github.com/annedorko/of-the-day/
  * @since             1.0.0
  * @package           Of_The_Day
  *
  * @of-the-day
  * Plugin Name:       Of The Day
- * Plugin URI:        https://www.annedorko.com/oftheday
+ * Plugin URI:        https://github.com/annedorko/of-the-day/
  * Description:       Allows you to automatically feature a random post of the day, for any post type with optional filters with any taxonomy.
  * Version:           0.1.0
  * Author:            Anne Dorko
