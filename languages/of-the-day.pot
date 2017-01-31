@@ -1,0 +1,35 @@
+# Copyright (C) 2017 Of The Day
+# This file is distributed under the same license as the Of The Day package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Of The Day 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/of-the-day\n"
+"POT-Creation-Date: 2017-01-31 12:55:42+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#. Plugin Name of the plugin/theme
+msgid "Of The Day"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://www.annedorko.com/oftheday"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Allows you to automatically feature a random post of the day, for any post "
+"type or taxonomy."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Anne Dorko"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://www.annedorko.com/"
+msgstr ""

@@ -41,3 +41,7 @@ You can choose any taxonomy registered on your site using its coresponding _taxo
 ## Transients
 
 The shortcode uses [get_posts()](https://codex.wordpress.org/Template_Tags/get_posts) to query based on your inputs, always returning one or zero posts. The resulting post object is serialized and hashed MD5 to create a unique transient code. That code is designated to expire at midnight according to the local time of your WordPress site.
+
+## Translations
+
+Currently, there isn't much to translate. However, a basic .pot file is available under /languages
