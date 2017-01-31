@@ -5,7 +5,7 @@ Tags: show post, random posts, automatic, featured
 Requires at least: 3.0.1
 Tested up to: 4.7.2
 Stable tag: 0.1.0
-License: GPLv3
+License: GPLv3 or any later version
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 A simple plugin that allows you to automatically feature a post of the day.

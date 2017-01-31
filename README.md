@@ -2,6 +2,8 @@
 
 This plugin is a simple and straightforward way to set one random post as the “______ of the Day”. It allows for custom post types, categories, tags, and custom taxonomies. Each unique query is cached until the end of the day using transients.
 
+The foundation of code was written using the [WordPress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate) by @DevinVinson
+
 ## Using the Shortcode
 
 Once the plugin is activated, you can use a shortcode to display your post of the day within any text area that supports shortcodes.
