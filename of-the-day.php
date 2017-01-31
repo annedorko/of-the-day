@@ -8,7 +8,7 @@
  * @of-the-day
  * Plugin Name:       Of The Day
  * Plugin URI:        https://www.annedorko.com/oftheday
- * Description:       Allows you to automatically feature a random post of the day, for any post type or taxonomy.
+ * Description:       Allows you to automatically feature a random post of the day, for any post type with optional filters with any taxonomy.
  * Version:           0.1.0
  * Author:            Anne Dorko
  * Author URI:        https://www.annedorko.com/
