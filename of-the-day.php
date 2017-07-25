@@ -65,4 +65,6 @@ function run_of_the_day() {
 	$plugin->run();
 
 }
+define( 'OTD_DIRECTORY', plugin_dir_path( __FILE__ ) );
+define( 'OTD_BASENAME', plugin_basename( __FILE__ ) );
 run_of_the_day();

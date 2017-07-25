@@ -110,6 +110,8 @@ class Of_The_Day {
 		 */
 		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-of-the-day-i18n.php';
 
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-of-the-day-settings.php';
+
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
@@ -157,6 +159,12 @@ class Of_The_Day {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
 		add_shortcode( 'oftheday', array( $plugin_admin, 'get_post' ) );
+
+		// Add settings
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menus' );
+
+		// Add settings
+		$this->loader->add_action( 'ofd_fb_javascript', $plugin_admin, 'facebook_app_javascript' );
 
 	}
 
