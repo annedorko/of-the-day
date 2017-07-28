@@ -60,7 +60,7 @@ class Of_The_Day_Admin {
 	function fb_app_id() {
 		$string = $this->options['facebook_app_id'];
 		if ( null === $string || empty( $string ) ) {
-			return null;
+			return 0;
 		} else {
 			return $string;
 		}
@@ -68,7 +68,7 @@ class Of_The_Day_Admin {
 	function fb_app_secret() {
 		$string = $this->options['facebook_app_secret'];
 		if ( null === $string || empty( $string ) ) {
-			return null;
+			return 0;
 		} else {
 			return $string;
 		}
@@ -76,15 +76,15 @@ class Of_The_Day_Admin {
 	function fb_access_token() {
 		$string = $this->options['facebook_access_token'];
 		if ( null === $string || empty( $string ) ) {
-			return null;
+			return 0;
 		} else {
 			return $string;
 		}
 	}
 	function fb_page_id() {
 		$string = $this->options['facebook_choose_page'];
-		if ( null === $string || empty( $string ) ) {
-			return null;
+		if ( 0 === $string || empty( $string ) ) {
+			return 0;
 		} else {
 			return $string;
 		}
@@ -213,7 +213,8 @@ class Of_The_Day_Admin {
 
 	function facebook_app_javascript() {
 			$script = '';
-			if ( !empty($this->fb_app_id()) ) {
+			$app_id = $this->fb_app_id();
+			if ( !empty( $app_id ) ) {
 			$script = "<script>
 			// This is called with the results from from FB.getLoginStatus().
 			function statusChangeCallback(response) {
@@ -244,9 +245,9 @@ class Of_The_Day_Admin {
 			}
 
 			// Called for starting the Facebook login process
-			// function myFacebookLogin() {
-			// 	jQuery('#facebook_choose_page').replaceWith(\"<fb:login-button scope='manage_pages,publish_pages' onlogin='checkLoginState();'></fb:login-button>\")
-			// }
+			function myFacebookLogin() {
+				jQuery('#facebook_choose_page').replaceWith(\"<fb:login-button scope='manage_pages,publish_pages' onlogin='checkLoginState();'></fb:login-button>\")
+			}
 
 			//  This function is called for managing pages
 			function getFacebookPages() {
@@ -416,11 +417,11 @@ class Of_The_Day_Admin {
 	 			$current_opts = $this->options;
 	 			$current_opts['transients'] = $save_info;
 	 			update_option( 'of-the-day', $current_opts );
+
+				$this->schedule_facebook_post( $post->post_title, $post->post_content, get_permalink( $post->ID ) );
 	 		}
 
 		} // End new post generation and scheduling
-
-		$this->schedule_facebook_post( $post->post_title, $post->post_content, $post->guid ); // TODO: Move to IF ELSE statement on generation
 
 		return $this->format_post( $post );
 	}
@@ -443,12 +444,12 @@ class Of_The_Day_Admin {
 		}
 
 		// Schedule in Facebook
-		$fb = new \Facebook\Facebook([
+		$fb = new \Facebook\Facebook( array(
 			'app_id' => $this->fb_app_id(),
 			'app_secret' => $this->fb_app_secret(),
 			'default_graph_version' => 'v2.10',
 			'default_access_token' => $this->fb_access_token()
-		]);
+		) );
 
 		// Set up automatic post message:
 		$message = $this->options['share_message'];
@@ -471,7 +472,7 @@ class Of_The_Day_Admin {
 		$parameters = array(
 			'published' => 'false',
 			'message' => $message,
-			// 'link' => $permalink,
+			'link' => $permalink,
 			'scheduled_publish_time' => $schedule_at
 		);
 		$request_link = $base_url . '?' . http_build_query( $parameters );
@@ -493,6 +494,8 @@ class Of_The_Day_Admin {
 		  echo 'Facebook SDK returned an error: ' . $e->getMessage();
 		  exit;
 		}
+
+		set_transient( 'ofd_post_is_scheduled', true, $schedule_at );
 	}
 
 	public function format_post( $post ) {
