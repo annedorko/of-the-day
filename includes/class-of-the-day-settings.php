@@ -143,7 +143,14 @@ class Of_The_Day_Settings {
 		}
 
 		$do_not_format = array( 'field_order', 'fields' );
-		if ( (false !== strpos( $string, '<input' ) | false !== strpos( $string, '<select' )) && false === in_array( $field, $do_not_format ) ) {
+
+		if ( true === in_array( $field, $do_not_format ) ) {
+			// Do nothing
+		} else if (
+				false !== strpos( $string, '<input' ) |
+				false !== strpos( $string, '<select' ) |
+				false !== strpos( $string, '<textarea' )
+			) {
 			$string = $this->set_input_defaults( $string, $field );
 		}
 
@@ -160,6 +167,15 @@ class Of_The_Day_Settings {
 		}
 		if ( false !== strpos( $string, 'select' ) ) {
 			$string = preg_replace( '/<select/', '<select name="' . $field_name . '" id="' . $field . '" ', $string, 1 );
+		}
+		if ( false !== strpos( $string, 'textarea' ) ) {
+			$string = preg_replace( '/<textarea/', '<textarea name="' . $field_name . '" id="' . $field . '" ', $string, 1 );
+			// Set value
+			$value = '';
+			if ( isset( $options[ $field ] ) and ! empty( $options[ $field ] ) ) {
+				$value = $options[ $field ];
+				$string = str_replace( '></', '>' . $value . '</', $string );
+			}
 		}
 
 		if ( false !== strpos( $string, 'type="checkbox"' ) ) {

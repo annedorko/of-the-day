@@ -50,6 +50,8 @@ register_deactivation_hook( __FILE__, 'deactivate_of_the_day' );
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-of-the-day.php';
 
+require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+
 /**
  * Begins execution of the plugin.
  *

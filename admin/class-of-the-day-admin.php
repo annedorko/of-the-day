@@ -65,6 +65,22 @@ class Of_The_Day_Admin {
 			return $string;
 		}
 	}
+	function fb_app_secret() {
+		$string = $this->options['facebook_app_secret'];
+		if ( null === $string || empty( $string ) ) {
+			return null;
+		} else {
+			return $string;
+		}
+	}
+	function fb_access_token() {
+		$string = $this->options['fb_access_token'];
+		if ( null === $string || empty( $string ) ) {
+			return null;
+		} else {
+			return $string;
+		}
+	}
 	function fb_page_id() {
 		$string = $this->options['facebook_choose_page'];
 		if ( null === $string || empty( $string ) ) {
@@ -103,6 +119,7 @@ class Of_The_Day_Admin {
 				__( 'Automatic Posting', 'of-the-day' ),
 				'<p>' . __( 'To automatically post Of the Day options to Facebook, please enable this feature and choose a sharing schedule.' ) . '</p>'
 			);
+				// Set checkbox options depending on what is active yet
 				$checkbox = '<label><input type="checkbox"> Check box to activate automatic posting.</label>';
 				if ( !$this->fb_app_id() ) {
 					$checkbox = 'Please authorize Facebook to get started.';
@@ -115,20 +132,49 @@ class Of_The_Day_Admin {
 				 __( 'Enable Scheduling', 'of-the-day' ),
 				 $checkbox
 				);
+
+				// Create a dropdown to choose publishing times
+				$start = '00:00';
+				$end = '23:00';
+
+				$tStart = strtotime($start);
+				$tEnd = strtotime($end);
+				$tNow = $tStart;
+				$dropdown_times = '';
+				$current = $this->options['time_to_share'];
+				while( $tNow <= $tEnd ){
+					$optValue = date("H:i",$tNow);
+					$selected = '';
+					if ( $current == $optValue ) {
+						$selected = 'selected="selected"';
+					}
+				  $dropdown_times .= "<option value='$optValue' $selected>$optValue</option>\n";
+				  $tNow = strtotime('+60 minutes',$tNow);
+				}
+
 				$settings->add_field(
 				 'configuration',
 				 'time_to_share',
 				 __( 'Time to Share', 'of-the-day' ),
-				 ''
+				 '<select>' . $dropdown_times . '</select>
+				 <p class="description">Facebook assumes you are providing UTC time. It is currently ' . gmdate("H:i") . ' UTC</p>'
 				);
-		//  FACEBOOK AUTHORIZATION
+
+				$settings->add_field(
+				 'configuration',
+				 'share_message',
+				 __( 'Sharing Template', 'of-the-day' ),
+				 '<textarea class="large-text code" style="min-height: 8em;"></textarea>
+					<p class="description">You can use the placeholders %post_title% and %post_content% in your template.</p>'
+				);
+			// FACEBOOK AUTHORIZATION
 			$settings->add_section(
 				'facebook-app',
 				'facebook_settings',
 				__( 'Facebook App', 'of-the-day' ),
 				'<p>' . __( 'In order to automatically share the post of the day to Facebook, you need to set your Facebook app information here.', 'of-the-day' ) . '</p>'
 			);
-				if ( $this->fb_app_id() ) {
+				if ( $this->fb_app_id() && $this->fb_app_secret() ) {
 					 $settings->add_field(
 							'facebook_settings',
 							'facebook_login',
@@ -142,12 +188,28 @@ class Of_The_Day_Admin {
 						'<select></select>
 						<p id="fb-page-name" class="description"></p>'
 					);
+
+					if ( !$this->fb_app_id() ) {
+						$settings->add_field(
+							'facebook_settings',
+							'facebook_save_for_access_token',
+							__( 'Resave Page', 'of-the-day' ),
+							'<p>Please resave the page to generate an access token.</p>'
+						);
+					}
+
 				} else {
 					$settings->add_field(
 						'facebook_settings',
 						'facebook_app_id',
 						__( 'App ID', 'of-the-day' ),
 						'<input type="text" class="regular-text" placeholder="Enter your app ID" value="" />'
+					);
+					$settings->add_field(
+						'facebook_settings',
+						'facebook_app_secret',
+						__( 'App Secret', 'of-the-day' ),
+						'<input type="text" class="regular-text" placeholder="Enter your app secret" value="" />'
 					);
 				}
 
@@ -206,6 +268,7 @@ class Of_The_Day_Admin {
 						if ( id == " . $this->fb_page_id() . " ) {
 							current = ' selected=\"selected\"';
 							jQuery('#fb-page-name').html('<strong>' + name + '</strong> – #' + id );
+							jQuery('#fb-page-name').after('<input type=\"hidden\" name=\"of-the-day[fb_access_token]\" value=\"' + data[i].access_token + '\" />');
 						}
 						jQuery('#facebook_choose_page').append(\"<option value='\" + id + \"'\" + current + \">\" + name + \"</option>\");
 					}
@@ -315,10 +378,10 @@ class Of_The_Day_Admin {
 		}
 
 		// Check for Facebook (share by default)
-		$share = true;
+		$share = false;
 		if ( isset( $atts['share'] ) && ! empty( $atts['share'] ) ) {
-			if ( false == $atts['share'] ) {
-				$share = false;
+			if ( true == $atts['share'] ) {
+				$share = true;
 			}
 		}
 
@@ -341,15 +404,96 @@ class Of_The_Day_Admin {
 		if ( ! empty( $exists ) ) {
 			 $post = unserialize( $exists );
 		} else {
-			 $posts = get_posts( $build_args );
-			if ( empty( $posts ) ) { return;
-			}
+			$posts = get_posts( $build_args );
+			if ( empty( $posts ) ) { return; }
 			 $post = $posts[0];
 			 $next_day_in_seconds = strtotime( 'tomorrow' ) - current_time( 'timestamp' );
 			 set_transient( 'oftheday_' . $transient_name, serialize( $post ), $next_day_in_seconds );
-		}
+			 if ( true === $share ) {
+	 			$save_info = array(
+	 				'transient' => 'oftheday_' . $transient_name,
+	 				'expires' => strtotime( 'tomorrow' ),
+	 				'id' => $post->ID	);
+	 			$current_opts = $this->options;
+	 			$current_opts['transients'] = $save_info;
+	 			update_option( 'of-the-day', $current_opts );
+	 		}
+
+		} // End new post generation and scheduling
+
+		$this->schedule_facebook_post( $post->post_title, $post->post_content, $post->guid ); // TODO: Move to IF ELSE statement on generation
 
 		return $this->format_post( $post );
+	}
+
+	private function schedule_facebook_post( $term, $definition, $permalink ) {
+		if ( true != $this->options['enable_feature'] ) {
+			return;
+		}
+		if ( false != get_transient( 'ofd_post_is_scheduled' ) ) {
+			return;
+		}
+		if ( !$this->fb_app_id()
+					|| !$this->fb_app_secret()
+					|| !$this->fb_access_token()
+					|| !$this->fb_page_id() ) {
+			return;
+		}
+		if ( '' == $term || '' == $definition || '' == $permalink ) {
+			return;
+		}
+
+		// Schedule in Facebook
+		$fb = new \Facebook\Facebook([
+			'app_id' => $this->fb_app_id(),
+			'app_secret' => $this->fb_app_secret(),
+			'default_graph_version' => 'v2.10',
+			'default_access_token' => $this->fb_access_token(), // optional
+		]);
+
+		// Set up automatic post message:
+		$message = $this->options['share_message'];
+		if ( empty($message) ) {
+			$message = "$term\n\n$definition";
+		} else {
+			$search = array( '%post_title%', '%post_content%' );
+			$replace = array( $term, $definition );
+			$message = preg_replace( $search, $replace, $message );
+		}
+
+		$plus_hours = $this->options['time_to_share'];
+		if ( empty($plus_hours) ) {
+			$plus_hours = '12';
+		}
+		$schedule_at = strtotime( "tomorrow $plus_hours:00" );
+
+		// Set up the link to POST to Facebook
+		$base_url = '/' . $this->fb_page_id() . '/feed';
+		$parameters = array(
+			'published' => 'false',
+			'message' => $message,
+			'link' => $permalink,
+			'scheduled_publish_time' => $schedule_at
+		);
+		$request_link = $base_url . '?' . http_build_query( $parameters );
+
+		$request = $fb->request(
+			'POST',
+			$request_link
+		);
+
+		// Send the request to Graph
+		try {
+		  $response = $fb->getClient()->sendRequest($request);
+		} catch(Facebook\Exceptions\FacebookResponseException $e) {
+		  // When Graph returns an error
+		  echo 'Graph returned an error: ' . $e->getMessage();
+		  exit;
+		} catch(Facebook\Exceptions\FacebookSDKException $e) {
+		  // When validation fails or other local issues
+		  echo 'Facebook SDK returned an error: ' . $e->getMessage();
+		  exit;
+		}
 	}
 
 	public function format_post( $post ) {
