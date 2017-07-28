@@ -74,7 +74,7 @@ class Of_The_Day_Admin {
 		}
 	}
 	function fb_access_token() {
-		$string = $this->options['fb_access_token'];
+		$string = $this->options['facebook_access_token'];
 		if ( null === $string || empty( $string ) ) {
 			return null;
 		} else {
@@ -174,44 +174,38 @@ class Of_The_Day_Admin {
 				__( 'Facebook App', 'of-the-day' ),
 				'<p>' . __( 'In order to automatically share the post of the day to Facebook, you need to set your Facebook app information here.', 'of-the-day' ) . '</p>'
 			);
-				if ( $this->fb_app_id() && $this->fb_app_secret() ) {
-					 $settings->add_field(
-							'facebook_settings',
-							'facebook_login',
-							__( 'Facebook Login', 'of-the-day' ),
-							'<fb:login-button scope="manage_pages,publish_pages" onlogin="checkLoginState();"></fb:login-button>'
-						);
-					$settings->add_field(
-						'facebook_settings',
-						'facebook_choose_page',
-						__( 'Choose Page', 'of-the-day' ),
-						'<select></select>
-						<p id="fb-page-name" class="description"></p>'
-					);
-
-					if ( !$this->fb_app_id() ) {
-						$settings->add_field(
-							'facebook_settings',
-							'facebook_save_for_access_token',
-							__( 'Resave Page', 'of-the-day' ),
-							'<p>Please resave the page to generate an access token.</p>'
-						);
-					}
-
-				} else {
-					$settings->add_field(
-						'facebook_settings',
-						'facebook_app_id',
-						__( 'App ID', 'of-the-day' ),
-						'<input type="text" class="regular-text" placeholder="Enter your app ID" value="" />'
-					);
-					$settings->add_field(
-						'facebook_settings',
-						'facebook_app_secret',
-						__( 'App Secret', 'of-the-day' ),
-						'<input type="text" class="regular-text" placeholder="Enter your app secret" value="" />'
-					);
-				}
+			$settings->add_field(
+				 'facebook_settings',
+				 'facebook_login',
+				 __( 'Facebook Login', 'of-the-day' ),
+				 '<fb:login-button scope="manage_pages,publish_pages" onlogin="checkLoginState();"></fb:login-button>'
+			 );
+		 $settings->add_field(
+			 'facebook_settings',
+			 'facebook_choose_page',
+			 __( 'Choose Page', 'of-the-day' ),
+			 '<select></select>
+			 <p id="fb-page-name" class="description"></p>'
+		 );
+			$settings->add_field(
+				'facebook_settings',
+				'facebook_app_id',
+				__( 'App ID', 'of-the-day' ),
+				'<input type="text" class="regular-text" placeholder="Enter your app ID" value="" />'
+			);
+			$settings->add_field(
+				'facebook_settings',
+				'facebook_app_secret',
+				__( 'App Secret', 'of-the-day' ),
+				'<input type="password" class="regular-text" placeholder="Enter your app secret" value="" />'
+			);
+			$settings->add_field(
+				'facebook_settings',
+				'facebook_access_token',
+				__( 'Access Token', 'of-the-day' ),
+				'<input type="text" class="regular-text" value="" />
+				<p class="description">You can extend access tokens with the <a href="https://developers.facebook.com/tools/debug/accesstoken/" target="_blank">Facebook Debug tool</a>.</p>'
+			);
 
 		$settings->register_settings();
 		return $settings;
@@ -268,7 +262,12 @@ class Of_The_Day_Admin {
 						if ( id == " . $this->fb_page_id() . " ) {
 							current = ' selected=\"selected\"';
 							jQuery('#fb-page-name').html('<strong>' + name + '</strong> – #' + id );
-							jQuery('#fb-page-name').after('<input type=\"hidden\" name=\"of-the-day[fb_access_token]\" value=\"' + data[i].access_token + '\" />');
+
+							// Replace token when it is empty
+							current_token = jQuery('#facebook_access_token').val();
+							if ( current_token.length < 1 ) {
+								jQuery('#facebook_access_token').val( data[i].access_token );
+							}
 						}
 						jQuery('#facebook_choose_page').append(\"<option value='\" + id + \"'\" + current + \">\" + name + \"</option>\");
 					}
@@ -448,7 +447,7 @@ class Of_The_Day_Admin {
 			'app_id' => $this->fb_app_id(),
 			'app_secret' => $this->fb_app_secret(),
 			'default_graph_version' => 'v2.10',
-			'default_access_token' => $this->fb_access_token(), // optional
+			'default_access_token' => $this->fb_access_token()
 		]);
 
 		// Set up automatic post message:
@@ -456,7 +455,7 @@ class Of_The_Day_Admin {
 		if ( empty($message) ) {
 			$message = "$term\n\n$definition";
 		} else {
-			$search = array( '%post_title%', '%post_content%' );
+			$search = array( '/%post_title%/', '/%post_content%/' );
 			$replace = array( $term, $definition );
 			$message = preg_replace( $search, $replace, $message );
 		}
@@ -472,7 +471,7 @@ class Of_The_Day_Admin {
 		$parameters = array(
 			'published' => 'false',
 			'message' => $message,
-			'link' => $permalink,
+			// 'link' => $permalink,
 			'scheduled_publish_time' => $schedule_at
 		);
 		$request_link = $base_url . '?' . http_build_query( $parameters );
